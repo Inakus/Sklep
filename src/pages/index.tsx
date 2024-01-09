@@ -1,6 +1,9 @@
 import Head from "next/head";
+import Card from "~/components/Card";
+import Carousel from "~/components/Carousel";
 import CoockieAlert from "~/components/CoockieAlert";
 import Footer from "~/components/Footer";
+import Hero from "~/components/Hero";
 import Navbar from "~/components/Navbar";
 
 export default function Home() {
@@ -13,7 +16,33 @@ export default function Home() {
       </Head>
       <main className="flex flex-col">
         <Navbar></Navbar>
-        <div className="flex min-h-screen flex-col justify-between"></div>
+        <div className="flex min-h-screen flex-col items-center justify-center">
+          <ul className="menu menu-horizontal w-[92%] justify-center rounded-box bg-base-200">
+            <li>
+              <a>Item 1</a>
+            </li>
+            <li>
+              <a>Item 2</a>
+            </li>
+            <li>
+              <a>Item 3</a>
+            </li>
+          </ul>
+          <div className="flex justify-center p-5 align-middle">
+            <Carousel />
+          </div>
+          <div className=" flex w-[92%] flex-col flex-wrap items-center justify-center gap-20 lg:flex-row">
+            <Card />
+            <Card />
+            <Card />
+            <Card />
+            <Card />
+            <Card />
+          </div>
+          <div className="m-5 flex items-center justify-center align-middle">
+            <Hero />
+          </div>
+        </div>
         <CoockieAlert />
         <Footer></Footer>
       </main>
