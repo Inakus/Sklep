@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { themeChange } from "theme-change";
 import ShoppingCart from "./ShopingCart";
+import Link from "next/link";
 
 export default function Navbar() {
   useEffect(() => {
@@ -10,7 +11,9 @@ export default function Navbar() {
   return (
     <div className="navbar sticky top-0 z-50 justify-center bg-base-100">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <Link className="btn btn-ghost text-xl" href="/">
+          daisyUI
+        </Link>
       </div>
       <div className="flex-none">
         <ShoppingCart
