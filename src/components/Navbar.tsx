@@ -9,10 +9,10 @@ export default function Navbar() {
   }, []);
 
   return (
-    <div className="navbar sticky top-0 z-50 justify-center bg-base-100">
+    <div className="navbar sticky top-0 z-20 justify-center bg-base-100">
       <div className="flex-1">
         <Link className="btn btn-ghost text-xl" href="/">
-          daisyUI
+          Skelp
         </Link>
       </div>
       <div className="flex-none">

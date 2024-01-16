@@ -12,9 +12,9 @@ export default function Page() {
           {/* Page content here */}
           <label
             htmlFor="my-drawer-2"
-            className="btn btn-primary drawer-button lg:hidden"
+            className="btn btn-primary drawer-button lg:hidden "
           >
-            Open drawer
+            Kategorie
           </label>
           <div className="flex min-h-screen flex-col justify-between lg:flex-row">
             <div className="m-3 flex flex-row flex-wrap justify-center gap-6">
@@ -29,13 +29,13 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div className="drawer-side ">
+        <div className="drawer-side z-50 lg:z-10">
           <label
             htmlFor="my-drawer-2"
             aria-label="close sidebar"
-            className="drawer-overlay"
+            className="drawer-overlay "
           ></label>
-          <ul className=" menu min-h-full w-80 bg-base-200 p-4 text-base-content sm:z-50">
+          <ul className="menu min-h-full w-80 bg-base-200 p-4 text-base-content">
             {/* Sidebar content here */}
             <li>
               <a>Solutions</a>

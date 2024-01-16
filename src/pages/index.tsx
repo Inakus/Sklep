@@ -3,10 +3,7 @@ import Link from "next/link";
 import Layout from "./layout";
 import Card from "~/components/Card";
 import Carousel from "~/components/Carousel";
-import CoockieAlert from "~/components/CoockieAlert";
-import Footer from "~/components/Footer";
 import Hero from "~/components/Hero";
-import Navbar from "~/components/Navbar";
 
 export default function Home() {
   const slides = [
