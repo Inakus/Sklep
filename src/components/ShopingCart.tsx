@@ -1,9 +1,13 @@
+import { useRouter } from "next/router";
+
 interface ShoppingCartProps {
   items: Array<{ name: string; price: number }>;
 }
 
 const ShoppingCart: React.FC<ShoppingCartProps> = ({ items }) => {
   const totalPrice = items.reduce((acc, item) => acc + item.price, 0);
+
+  const router = useRouter();
 
   return (
     <div className="dropdown dropdown-end">
@@ -38,7 +42,12 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ items }) => {
             Do zapłaty: {totalPrice.toFixed(2)}zł
           </span>
           <div className="card-actions">
-            <button className="btn btn-primary btn-block">View cart</button>
+            <button
+              onClick={() => router.push("/koszyk")}
+              className="btn btn-primary btn-block"
+            >
+              Zobacz koszyk
+            </button>
           </div>
         </div>
       </div>
