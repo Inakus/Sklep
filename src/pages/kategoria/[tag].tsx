@@ -14,7 +14,7 @@ export default function Page() {
             htmlFor="my-drawer-2"
             className="btn btn-primary drawer-button lg:hidden "
           >
-            Kategorie
+            Filtry
           </label>
           <div className="flex min-h-screen flex-col justify-between lg:flex-row">
             <div className="m-3 flex flex-row flex-wrap justify-center gap-6">

@@ -1,12 +1,27 @@
-import { useEffect } from "react";
-import { themeChange } from "theme-change";
+import { useEffect, useState } from "react";
 import ShoppingCart from "./ShopingCart";
 import Link from "next/link";
+import { useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/router";
+import { useCookies } from "react-cookie";
 
 export default function Navbar() {
+  const { signOut, user } = useClerk();
+  const router = useRouter();
+  const [cookies, setCookie] = useCookies(["theme"]);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
+  const [isDark, setIsDark] = useState<boolean>(cookies.theme);
+
+  const setCookieHandler = () => {
+    setIsDark(!isDark);
+    setCookie("theme", !isDark, { path: "/" });
+  };
+
   useEffect(() => {
-    themeChange(false);
-  }, []);
+    document
+      .querySelector("html")
+      ?.setAttribute("data-theme", isDark ? "dark" : "light");
+  }, [isDark]);
 
   return (
     <div className="navbar sticky top-0 z-20 justify-center bg-base-100">
@@ -37,13 +52,34 @@ export default function Navbar() {
             tabIndex={0}
             className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
           >
-            <li>
-              <a className="justify-between">Profile</a>
-            </li>
-
-            <li>
-              <a>Logout</a>
-            </li>
+            {user && (
+              <li>
+                <Link href={"/profil"} className="justify-between">
+                  Profil
+                </Link>
+              </li>
+            )}
+            {user && (
+              <li>
+                <a
+                  onClick={() =>
+                    signOut(() => router.push("/").catch(console.error))
+                  }
+                >
+                  Wyloguj
+                </a>
+              </li>
+            )}
+            {!user && (
+              <li>
+                <a onClick={() => router.push("/signin")}>Zaloguj</a>
+              </li>
+            )}
+            {!user && (
+              <li>
+                <a onClick={() => router.push("/signup")}>Zarejestruj się</a>
+              </li>
+            )}
             <li>
               <label className="flex cursor-pointer gap-2">
                 <svg
@@ -62,8 +98,10 @@ export default function Navbar() {
                 </svg>
                 <input
                   type="checkbox"
-                  value="dark"
-                  className="theme-controller toggle"
+                  value={!isDark ? "light" : "dark"}
+                  onChange={setCookieHandler}
+                  checked={isDark}
+                  className=" toggle"
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
