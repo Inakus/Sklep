@@ -1,8 +1,11 @@
 import { useState } from "react";
 import Layout from "./layout";
+import { useRouter } from "next/router";
 
 export default function Koszyk() {
   const [items, setItems] = useState(0);
+  const router = useRouter();
+  const orderId = 1234567890;
 
   const addItems = () => {
     setItems(items + 1);
@@ -12,6 +15,10 @@ export default function Koszyk() {
     if (items > 0) {
       setItems(items - 1);
     }
+  };
+
+  const handleClick = () => {
+    router.push(`/zamowienie/${orderId}`).catch(console.error);
   };
 
   return (
@@ -66,7 +73,12 @@ export default function Koszyk() {
                 <p>1000 zł</p>
               </div>
               <div className="card-actions justify-center">
-                <button className="btn btn-primary btn-wide">Buy Now</button>
+                <button
+                  onClick={() => handleClick()}
+                  className="btn btn-primary btn-wide"
+                >
+                  Kup Teraz
+                </button>
               </div>
             </div>
           </div>

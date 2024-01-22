@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import Layout from "../layout";
 import Carousel from "~/components/Carousel";
-import Card from "~/components/Card";
 import { useState } from "react";
 
 export default function Page() {
