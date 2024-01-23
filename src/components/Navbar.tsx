@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import ShoppingCart from "./ShopingCart";
 import Link from "next/link";
-import { useClerk } from "@clerk/nextjs";
+import { SignOutButton, useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useCookies } from "react-cookie";
 
 export default function Navbar() {
-  const { signOut, user } = useClerk();
+  const { user } = useClerk();
   const router = useRouter();
   const [cookies, setCookie] = useCookies(["theme"]);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
@@ -31,13 +31,7 @@ export default function Navbar() {
         </Link>
       </div>
       <div className="flex-none">
-        <ShoppingCart
-          items={[
-            { name: "Item 1", price: 10 },
-            { name: "Item 2", price: 20 },
-          ]}
-        />
-
+        <ShoppingCart />
         <div className="dropdown dropdown-end">
           <div
             tabIndex={0}
@@ -61,13 +55,9 @@ export default function Navbar() {
             )}
             {user && (
               <li>
-                <a
-                  onClick={() =>
-                    signOut(() => router.push("/").catch(console.error))
-                  }
-                >
-                  Wyloguj
-                </a>
+                <SignOutButton>
+                  <a>Wyloguj</a>
+                </SignOutButton>
               </li>
             )}
             {!user && (

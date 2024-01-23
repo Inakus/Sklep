@@ -1,13 +1,24 @@
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 
-interface ShoppingCartProps {
-  items: Array<{ name: string; price: number }>;
-}
+export default function ShoppingCart() {
+  const [cookies] = useCookies<string>(["shopingCart"]);
+  const [items, setItems] = useState<[{ id: number; price: number }] | []>([]);
 
-const ShoppingCart: React.FC<ShoppingCartProps> = ({ items }) => {
-  const totalPrice = items.reduce((acc, item) => acc + item.price, 0);
+  useEffect(() => {
+    if (cookies.shopingCart) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      setItems(cookies.shopingCart);
+    }
+  }, [cookies.shopingCart]);
 
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+  const total = items.reduce(
+    (acc: number, item: { id: number; price: number }) => acc + item.price,
+    0,
+  );
 
   return (
     <div className="dropdown dropdown-end">
@@ -38,9 +49,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ items }) => {
           <span className="text-lg font-bold">
             {items.length} Przedmioty w Koszyku
           </span>
-          <span className="text-info">
-            Do zapłaty: {totalPrice.toFixed(2)}zł
-          </span>
+          <span className="text-info">Do zapłaty: {total.toFixed(2)}zł</span>
           <div className="card-actions">
             <button
               onClick={() => router.push("/koszyk")}
@@ -53,6 +62,4 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ items }) => {
       </div>
     </div>
   );
-};
-
-export default ShoppingCart;
+}

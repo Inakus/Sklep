@@ -2,20 +2,14 @@ import { useUser } from "@clerk/nextjs";
 import Layout from "./layout";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import { useEffect } from "react";
 
 export default function Profil() {
   const { user } = useUser();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!user) {
-      router.push("/").catch(console.error);
-    }
-  });
-
   if (!user) {
-    return <div></div>;
+    router.push("/").catch(console.error);
+    return null;
   }
 
   const deleteUser = api.user.deleteUser.useMutation();
