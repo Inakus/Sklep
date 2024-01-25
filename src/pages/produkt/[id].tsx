@@ -51,6 +51,7 @@ export default function Page() {
                     <strong>Nazwa Przedmiotu</strong>
                   </h1>
                   <p className="text-xs">🟢 W magazynie</p>
+                  <p>Cena: 100zł</p>
                 </div>
                 <div className="flex justify-center gap-5">
                   <div className="join flex justify-center">

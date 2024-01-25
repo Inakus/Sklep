@@ -10,11 +10,44 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Zamowienia {
+    id                String              @id @default(uuid())
+    uzytkowikId       String?
+    email             String
+    status            String
+    ZamowioneProdukty ZamowioneProdukty[]
+    createdAt         DateTime            @default(now())
+    updatedAt         DateTime            @updatedAt
+}
 
-    @@index([name])
+model ZamowioneProdukty {
+    id           String     @id @default(uuid())
+    zamowienia   Zamowienia @relation(fields: [zamowieniaId], references: [id])
+    zamowieniaId String
+    produkt      Produkty   @relation(fields: [produktyId], references: [id])
+    produktyId   String
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
+}
+
+model Produkty {
+    id                String              @id @default(uuid())
+    nazwa             String
+    cena              Int
+    ilosc             Int
+    tagi              String
+    opis              String
+    zdjecia           Zdjecia[]
+    ZamowioneProdukty ZamowioneProdukty[]
+    createdAt         DateTime            @default(now())
+    updatedAt         DateTime            @updatedAt
+}
+
+model Zdjecia {
+    id         String   @id @default(uuid())
+    link       String
+    produktyId String
+    produkty   Produkty @relation(fields: [produktyId], references: [id])
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 }
