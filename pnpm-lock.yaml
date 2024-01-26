@@ -59,6 +59,12 @@ dependencies:
   theme-change:
     specifier: ^2.5.0
     version: 2.5.0
+  universal-cookie:
+    specifier: ^2.1.2
+    version: 2.2.0
+  universal-cookie-express:
+    specifier: ^2.1.2
+    version: 2.2.0
   zod:
     specifier: ^3.22.4
     version: 3.22.4
@@ -73,12 +79,18 @@ devDependencies:
   '@types/react':
     specifier: ^18.2.37
     version: 18.2.47
+  '@types/react-cookie':
+    specifier: git+ssh://git@github.com:S64/types-react-cookie.git#v2.1.2-2
+    version: github.com/S64/types-react-cookie/6fde71e4eab011a434d9f6607daf227bd166d6c4
   '@types/react-dom':
     specifier: ^18.2.15
     version: 18.2.18
-  '@types/react-draft-wysiwyg':
-    specifier: ^1.13.8
-    version: 1.13.8
+  '@types/universal-cookie':
+    specifier: git+ssh://git@github.com:S64/types-universal-cookie.git#v2.1.2-2
+    version: github.com/S64/types-universal-cookie/94d1b4813879268d335f8751e1a07b6d2fd2aa6a
+  '@types/universal-cookie-express':
+    specifier: git+ssh://git@github.com:S64/types-universal-cookie-express.git#v2.1.2-2
+    version: github.com/S64/types-universal-cookie-express/cde27b5756fb9125f6f6194e13b50c1490fab018
   '@typescript-eslint/eslint-plugin':
     specifier: ^6.11.0
     version: 6.18.0(@typescript-eslint/parser@6.18.0)(eslint@8.56.0)(typescript@5.3.3)
@@ -642,13 +654,6 @@ packages:
       '@types/node': 18.19.5
     dev: false
 
-  /@types/draft-js@0.11.17:
-    resolution: {integrity: sha512-th0OwSPftG2r5rvGxS7nt8I7hcWMlrQ9OJcNx6MdXAwO797W78IGEsGWonO+turVBWEd3qylZRGBVtpEX9vSYQ==}
-    dependencies:
-      '@types/react': 18.2.47
-      immutable: 3.7.6
-    dev: true
-
   /@types/eslint@8.56.1:
     resolution: {integrity: sha512-18PLWRzhy9glDQp3+wOgfLYRWlhgX0azxgJ63rdpoUHyrC9z0f5CkFburjQx4uD7ZCruw85ZtMt6K+L+R8fLJQ==}
     dependencies:
@@ -745,13 +750,6 @@ packages:
   /@types/react-dom@18.2.18:
     resolution: {integrity: sha512-TJxDm6OfAX2KJWJdMEVTwWke5Sc/E/RlnPGvGfS0W7+6ocy2xhDVQVh/KvC2Uf7kACs+gDytdusDSdWfWkaNzw==}
     dependencies:
-      '@types/react': 18.2.47
-    dev: true
-
-  /@types/react-draft-wysiwyg@1.13.8:
-    resolution: {integrity: sha512-qo0vIHjqAYq3Hz93Td3ecNodgVjKsvrWkBJ6mZXJSUmQzrQ5Fu7NS9oV5PXnVbnuqPoJLALbCSiz8UCksLribg==}
-    dependencies:
-      '@types/draft-js': 0.11.17
       '@types/react': 18.2.47
     dev: true
 
@@ -1266,6 +1264,11 @@ packages:
   /concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
     dev: true
+
+  /cookie@0.3.1:
+    resolution: {integrity: sha512-+IJOX0OqlHCszo2mBUq+SrEbCj6w7Kpffqx60zYbPTFaO4+yYgRjHwcZNpWvaTylDHaV7PPmBHzSecZiMhtPgw==}
+    engines: {node: '>= 0.6'}
+    dev: false
 
   /cookie@0.5.0:
     resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
@@ -2150,11 +2153,6 @@ packages:
   /ignore@5.3.0:
     resolution: {integrity: sha512-g7dmpshy+gD7mh88OC9NwSGTKoc3kyLAZQRU1mt53Aw/vnvfXnbC+F/7F7QoYVKbV+KNvJx8wArewKy1vXMtlg==}
     engines: {node: '>= 4'}
-    dev: true
-
-  /immutable@3.7.6:
-    resolution: {integrity: sha512-AizQPcaofEtO11RZhPPHBOJRdo/20MKQF9mBLnVkBoyHi1/zXK8fzVdnEpSV9gxqtnh6Qomfp3F0xT5qP/vThw==}
-    engines: {node: '>=0.8.0'}
     dev: true
 
   /import-fresh@3.3.0:
@@ -3618,6 +3616,19 @@ packages:
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
+  /universal-cookie-express@2.2.0:
+    resolution: {integrity: sha512-wk+YPjuV6rMRWLRCIc9W+o0GPX+pB/KwLfpu+CwATMf/3fyLhJzTmDJiuZivwmObO4h1TvVYlz7frj7F4XLKGA==}
+    dependencies:
+      universal-cookie: 2.2.0
+    dev: false
+
+  /universal-cookie@2.2.0:
+    resolution: {integrity: sha512-weEuvQvnMs74WGwqKSbeapCRv/7ATHDCqrfZtj579r3fQCxcwtoXYMoaZ8YOCQga/ctQTYy20xMOH1u7cAAU6w==}
+    dependencies:
+      cookie: 0.3.1
+      object-assign: 4.1.1
+    dev: false
+
   /universal-cookie@7.0.1:
     resolution: {integrity: sha512-6OuX9xELF6dsVJeADJAYNDOxQf/NR3Na5bGCRd+hkysMDkSt79jJ4tdv5OBe+ZgAks3ExHBdCXkD2SjqLyK59w==}
     dependencies:
@@ -3767,3 +3778,21 @@ packages:
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
     dev: false
+
+  github.com/S64/types-react-cookie/6fde71e4eab011a434d9f6607daf227bd166d6c4:
+    resolution: {tarball: https://codeload.github.com/S64/types-react-cookie/tar.gz/6fde71e4eab011a434d9f6607daf227bd166d6c4}
+    name: '@types/react-cookie'
+    version: 2.1.2-2
+    dev: true
+
+  github.com/S64/types-universal-cookie-express/cde27b5756fb9125f6f6194e13b50c1490fab018:
+    resolution: {tarball: https://codeload.github.com/S64/types-universal-cookie-express/tar.gz/cde27b5756fb9125f6f6194e13b50c1490fab018}
+    name: '@types/universal-cookie-express'
+    version: 2.1.2-2
+    dev: true
+
+  github.com/S64/types-universal-cookie/94d1b4813879268d335f8751e1a07b6d2fd2aa6a:
+    resolution: {tarball: https://codeload.github.com/S64/types-universal-cookie/tar.gz/94d1b4813879268d335f8751e1a07b6d2fd2aa6a}
+    name: '@types/universal-cookie'
+    version: 2.1.2-2
+    dev: true

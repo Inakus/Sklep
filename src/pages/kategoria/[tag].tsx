@@ -1,9 +1,14 @@
 import { useRouter } from "next/router";
+import { api } from "~/utils/api";
 import Layout from "../layout";
 import Card from "~/components/Card";
+import Link from "next/link";
 
 export default function Page() {
   const router = useRouter();
+  const tag = api.produkt.FindAllProductsWithCategory.useQuery({
+    category: router.query.tag as string,
+  });
   return (
     <Layout>
       <div className="drawer lg:drawer-open">
@@ -12,20 +17,22 @@ export default function Page() {
           {/* Page content here */}
           <label
             htmlFor="my-drawer-2"
-            className="btn btn-primary drawer-button lg:hidden "
+            className="btn btn-primary drawer-button btn-block lg:hidden "
           >
             Filtry
           </label>
           <div className="flex min-h-screen flex-col justify-between lg:flex-row">
             <div className="m-3 flex flex-row flex-wrap justify-center gap-6">
-              <Card />
-              <Card />
-              <Card />
-              <Card />
-              <Card />
-              <Card />
-              <Card />
-              <Card />
+              {tag.data?.map((produkt) => (
+                <Card
+                  key={produkt.id}
+                  id={produkt.id}
+                  name={produkt.nazwa}
+                  price={produkt.cena}
+                  description={produkt.opis}
+                  imageUrls={produkt.zdjecia[0]?.link}
+                />
+              ))}
             </div>
           </div>
         </div>
@@ -38,81 +45,31 @@ export default function Page() {
           <ul className="menu min-h-full w-80 bg-base-200 p-4 text-base-content">
             {/* Sidebar content here */}
             <li>
-              <a>Solutions</a>
+              <a>Filtry</a>
               <ul>
                 <li>
-                  <a>Design</a>
+                  <Link
+                    className={router.query.tag === "firany" ? "active" : ""}
+                    href="/kategoria/firany"
+                  >
+                    Firany
+                  </Link>
                 </li>
                 <li>
-                  <a>Development</a>
+                  <Link
+                    className={router.query.tag === "zaslony" ? "active" : ""}
+                    href="/kategoria/zaslony"
+                  >
+                    Zasłony
+                  </Link>
                 </li>
                 <li>
-                  <a>Hosting</a>
-                </li>
-                <li>
-                  <a>Domain register</a>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a>Enterprise</a>
-              <ul>
-                <li>
-                  <a>CRM software</a>
-                </li>
-                <li>
-                  <a>Marketing management</a>
-                </li>
-                <li>
-                  <a>Security</a>
-                </li>
-                <li>
-                  <a>Consulting</a>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a>Products</a>
-              <ul>
-                <li>
-                  <a>UI Kit</a>
-                </li>
-                <li>
-                  <a>Wordpress themes</a>
-                </li>
-                <li>
-                  <a>Wordpress plugins</a>
-                </li>
-                <li>
-                  <a>Open source</a>
-                  <ul>
-                    <li>
-                      <a>Auth management system</a>
-                    </li>
-                    <li>
-                      <a>VScode theme</a>
-                    </li>
-                    <li>
-                      <a>Color picker app</a>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a>Company</a>
-              <ul>
-                <li>
-                  <a>About us</a>
-                </li>
-                <li>
-                  <a>Contact us</a>
-                </li>
-                <li>
-                  <a>Privacy policy</a>
-                </li>
-                <li>
-                  <a>Press kit</a>
+                  <Link
+                    className={router.query.tag === "dywany" ? "active" : ""}
+                    href="/kategoria/dywany"
+                  >
+                    Dywany
+                  </Link>
                 </li>
               </ul>
             </li>

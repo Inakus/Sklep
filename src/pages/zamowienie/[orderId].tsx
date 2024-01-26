@@ -1,10 +1,13 @@
 import Link from "next/link";
-import CountrySelector from "~/components/CountrySelector";
 import { useState } from "react";
-import Layout from "../layout";
+import { useUser } from "@clerk/nextjs";
+
+import CountrySelector from "~/components/CountrySelector";
 
 export default function Page() {
   const [delivery, setDelivery] = useState("PACZKOMAT");
+
+  const { user } = useUser();
 
   const deliveryMethod = () => {
     if (delivery === "PACZKOMAT") {
@@ -32,12 +35,14 @@ export default function Page() {
         <div className="card flex w-[80%] bg-base-100  shadow-xl">
           <div className="card-body items-start text-center">
             <h2 className="card-title">1. Informację kontaktowe</h2>
-            <p>
-              Posiadasz już konto?{" "}
-              <Link className="link link-primary" href={"/signup"}>
-                Zaloguj się
-              </Link>
-            </p>
+            {!user && (
+              <p>
+                Posiadasz już konto?{" "}
+                <Link className="link link-primary" href={"/signup"}>
+                  Zaloguj się
+                </Link>
+              </p>
+            )}
             <br />
             <p>
               Adres e-mail <strong className="text-error">*</strong>

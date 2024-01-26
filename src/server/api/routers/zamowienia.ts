@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
-export const produktRouter = createTRPCRouter({
+export const zamowieniaRouter = createTRPCRouter({
     FindAllOrders: protectedProcedure
     .query(async ({ ctx }) => {
         const data = ctx.db.zamowienia.findMany({

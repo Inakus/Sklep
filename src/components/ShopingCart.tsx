@@ -4,7 +4,9 @@ import { useCookies } from "react-cookie";
 
 export default function ShoppingCart() {
   const [cookies] = useCookies<string>(["shopingCart"]);
-  const [items, setItems] = useState<[{ id: number; price: number }] | []>([]);
+  const [items, setItems] = useState<
+    [{ id: number; price: number; count: number }] | []
+  >([]);
 
   useEffect(() => {
     if (cookies.shopingCart) {
@@ -16,7 +18,8 @@ export default function ShoppingCart() {
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   const total = items.reduce(
-    (acc: number, item: { id: number; price: number }) => acc + item.price,
+    (acc: number, item: { id: number; price: number; count: number }) =>
+      acc + (item.price / 100) * item.count,
     0,
   );
 

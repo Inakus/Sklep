@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "react-feather";
 
+import type { Zdjecia } from "@prisma/client";
+
 export default function Carousel({ slides }: { slides: string[] }) {
   const [current, setCurrent] = useState(0);
 

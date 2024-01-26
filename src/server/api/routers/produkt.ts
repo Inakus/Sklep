@@ -42,6 +42,20 @@ export const produktRouter = createTRPCRouter({
             })
             return await data
         }),
+        FindProductsByIds: publicProcedure
+        .input(z.object({ ids: z.array(z.string()) }))
+        .query(async ({ ctx, input }) => {
+           return await ctx.db.produkty.findMany({
+               where: {
+                   id: {
+                       in: input.ids
+                   }
+               },
+               include: {
+                   zdjecia: true,
+               }
+           }) 
+        }),
     CreateProduct: protectedProcedure
         .input(z.object({
             name: z.string(),
@@ -60,23 +74,68 @@ export const produktRouter = createTRPCRouter({
                     tagi: input.tag,
                 },
             })
-            const zdjecia = input.imageURls.map((url) => {
-                void ctx.db.zdjecia.create({
-                data: 
+            const zdjecia = input.imageURls.map(async (url) => {
+                await ctx.db.zdjecia.create({
+                    data:
                     {
                         link: url,
                         produktyId: produkt.id
                     }
                 })
             })
-            if(zdjecia && produkt) {
+            if (zdjecia && produkt) {
                 return {
                     success: true
                 }
-            }else{
+            } else {
                 return {
                     success: false
                 }
             }
-        })
+        }),
+    DeleteAllProducts: protectedProcedure
+        .mutation(async ({ ctx }) => {
+            await ctx.db.produkty.deleteMany()
+            return {
+                success: true
+            }
+        }),
+    DeleteProduct: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            await ctx.db.produkty.delete({
+                where: {
+                    id: input.id
+                }
+            })
+            return {
+                success: true
+            }
+        }),
+    UpdateCountProtuct: protectedProcedure
+        .input(z.object({ id: z.string(), count: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            const produkt = await ctx.db.produkty.findUnique({
+                where: {
+                    id: input.id
+                }
+            })
+            if (produkt) {
+                await ctx.db.produkty.update({
+                    where: {
+                        id: input.id
+                    },
+                    data: {
+                        ilosc: produkt?.ilosc - input.count
+                    }
+                })
+
+                return {
+                    success: true
+                }
+            }
+            return {
+                success: false
+            }
+        }),
 });
