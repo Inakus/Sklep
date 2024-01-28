@@ -2,23 +2,31 @@ import { useUser } from "@clerk/nextjs";
 import Layout from "./layout";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
+import { useEffect } from "react";
 
 export default function Profil() {
   const { user } = useUser();
   const router = useRouter();
-
-  if (!user) {
-    router.push("/").catch(console.error);
-    return null;
-  }
+  useEffect(() => {
+    if (!user) {
+      router.push("/").catch(console.error);
+    }
+  });
 
   const deleteUser = api.user.deleteUser.useMutation();
   const handleDeleteUser = () => {
     const userId = user?.id;
+    if (!userId) {
+      return;
+    }
     deleteUser.mutate({ userId });
     router.push("/").catch(console.error);
     window.location.reload();
   };
+
+  const orders = api.zamowienia.FindAllOrdersByUser.useQuery({
+    userId: user?.id,
+  });
 
   return (
     <Layout>
@@ -32,6 +40,7 @@ export default function Profil() {
           >
             Ustawienia
           </label>
+          <h1>Witaj {user?.primaryEmailAddress?.emailAddress}</h1>
           <div className="flex w-full flex-col overflow-x-auto text-center">
             <h2 className="text-2xl font-bold">Zamównia</h2>
             <table className="table">
@@ -46,26 +55,25 @@ export default function Profil() {
               </thead>
               <tbody>
                 {/* row 1 */}
-                <tr className="hover">
-                  <th>1</th>
-                  <td>Cy Ganderton</td>
-                  <td>Quality Control Specialist</td>
-                  <td>Blue</td>
-                </tr>
-                {/* row 2 */}
-                <tr className="hover">
-                  <th>2</th>
-                  <td>Hart Hagerty</td>
-                  <td>Desktop Support Technician</td>
-                  <td>Purple</td>
-                </tr>
-                {/* row 3 */}
-                <tr className="hover">
-                  <th>3</th>
-                  <td>Brice Swyre</td>
-                  <td>Tax Accountant</td>
-                  <td>Red</td>
-                </tr>
+                {orders.isFetched &&
+                  orders.data?.map((order) => {
+                    return (
+                      <tr className="hover" key={order.id}>
+                        <th>{order.id}</th>
+                        <td>{order.createdAt.toLocaleString()}</td>
+                        <td>{order.status}</td>
+                        <td>{order.cena}</td>
+                      </tr>
+                    );
+                  })}
+                {orders.data?.length === 0 && (
+                  <tr className="hover">
+                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

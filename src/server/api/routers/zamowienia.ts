@@ -13,7 +13,7 @@ export const zamowieniaRouter = createTRPCRouter({
         return await data
     }),
     FindAllOrdersByUser: protectedProcedure
-    .input(z.object({ userId: z.string() }))
+    .input(z.object({ userId: z.string().nullish() }))
     .query(async ({ ctx, input }) => {
         const data = ctx.db.zamowienia.findMany({
             where: {
@@ -39,13 +39,14 @@ export const zamowieniaRouter = createTRPCRouter({
         return { message: 'Success', status: 200 };
     }),
     AddOrder: publicProcedure
-    .input(z.object({ userId: z.string().nullish(), email: z.string().email(), products: z.array(z.object({id: z.string(), quantity: z.number()})) }))
+    .input(z.object({ userId: z.string().nullish(),price: z.number(), email: z.string().email(), products: z.array(z.object({id: z.string(), quantity: z.number()})) }))
     .mutation(async ({ ctx, input }) => {
         const zamowienie = await ctx.db.zamowienia.create({
             data: {
                 uzytkowikId: input.userId,
                 email: input.email,
-                status: 'w trakcie realizacji'
+                status: 'w trakcie realizacji',
+                cena: input.price
             }
         })
         const zamowioneProdukty = input.products.map((product) => {

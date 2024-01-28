@@ -39,8 +39,11 @@ export default function Page() {
   };
   const addToCart = () => {
     if (produkt.data) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const shopingCartCookies = cookies.shopingCart;
+      const shopingCartCookies = cookies.shopingCart as Array<{
+        id: string;
+        price: number;
+        count: number;
+      }>;
       if (!shopingCartCookies) {
         setCookie(
           "shopingCart",
@@ -57,22 +60,27 @@ export default function Page() {
           },
         );
       } else {
-        setCookie(
-          "shopingCart",
-          [
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            ...shopingCartCookies,
-            {
-              id: produkt.data?.id,
-              price: produkt.data?.cena,
-              count: items,
-            },
-          ],
-          {
-            path: "/",
-            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          },
+        const existingProductIndex = shopingCartCookies.findIndex(
+          (item) => item.id === produkt.data?.id,
         );
+
+        if (existingProductIndex !== -1) {
+          // Product already in the cart, update count
+          shopingCartCookies[existingProductIndex].count += items;
+        } else {
+          // Product not in the cart, add it with count 1
+          shopingCartCookies.push({
+            id: produkt.data?.id,
+            price: produkt.data?.cena,
+            count: 1,
+          });
+        }
+
+        // Set the updated shopping cart in the cookie
+        setCookie("shopingCart", shopingCartCookies, {
+          path: "/",
+          expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        });
       }
     }
   };
@@ -107,9 +115,14 @@ export default function Page() {
                   <h1 className="text-2xl font-bold">
                     <strong>{produkt.data?.nazwa}</strong>
                   </h1>
-                  <p className="text-xs">
-                    🟢 W magazynie {produkt.data.ilosc} sztuki
-                  </p>
+                  {produkt.data?.ilosc > 0 && (
+                    <p className="text-xs">
+                      🟢 W magazynie {produkt.data.ilosc} sztuki
+                    </p>
+                  )}
+                  {produkt.data?.ilosc === 0 && (
+                    <p className="text-xs">🔴 Brak w magazynie</p>
+                  )}
                   <p>
                     Cena: {(produkt.data?.cena / 100).toFixed(2)}
                     zł
@@ -125,7 +138,13 @@ export default function Page() {
                       +
                     </button>
                   </div>
-                  <button className="btn btn-primary" onClick={addToCart}>
+                  <button
+                    className={
+                      "btn btn-primary" +
+                      (produkt.data?.ilosc === 0 ? " btn-disabled" : "")
+                    }
+                    onClick={addToCart}
+                  >
                     Kup Teraz
                   </button>
                 </div>

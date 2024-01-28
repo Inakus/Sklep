@@ -1,35 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Cookies } from "react-cookie";
 import { api } from "~/utils/api";
 
 import Layout from "./layout";
+import Table from "~/components/table";
 
 export default function Koszyk() {
-  const [items, setItems] = useState(0);
+  const [cookie, setCookie] = useState<
+    Array<{ id: string; price: number; count: number }> | []
+  >([]);
   const router = useRouter();
-  const shopingCookies = new Cookies();
-  const cookie = shopingCookies.get("shopingCart") as Array<{
-    id: string;
-    price: number;
-    count: number;
-  }>;
   const orderId = 1234567890;
-  const total = cookie.reduce(
-    (acc: number, item: { id: string; price: number; count: number }) =>
-      acc + (item.price / 100) * item.count,
-    0,
-  );
 
-  const addItems = () => {
-    setItems(items + 1);
-  };
-
-  const removeItems = () => {
-    if (items > 0) {
-      setItems(items - 1);
-    }
-  };
+  useEffect(() => {
+    const shopingCookies = new Cookies();
+    setCookie(
+      shopingCookies.get("shopingCart") as Array<{
+        id: string;
+        price: number;
+        count: number;
+      }>,
+    );
+  }, []);
 
   const products = api.produkt.FindProductsByIds.useQuery({
     ids: cookie?.map((c) => c.id),
@@ -41,11 +34,6 @@ export default function Koszyk() {
 
   return (
     <>
-      {products.isLoading && (
-        <div className="flex min-h-[73vh] flex-col items-center justify-center gap-5">
-          <span className="loading loading-spinner loading-lg"></span>
-        </div>
-      )}
       <Layout>
         <div className="flex min-h-[73vh] flex-col items-center justify-center gap-5">
           <div className="flex w-full flex-1 flex-wrap items-start justify-center gap-5">
@@ -61,48 +49,15 @@ export default function Koszyk() {
                 </thead>
                 <tbody>
                   {/* row 1 */}
+                  {cookie == undefined && <Table></Table>}
                   {products.data?.map((p, index) => {
                     return (
-                      <>
-                        <tr key={p.id}>
-                          <th>
-                            <div key={p.id} className="flex flex-col gap-10">
-                              <h2 className="text-xl font-bold">{p.nazwa}</h2>
-                              <p className="font-bold">
-                                {(
-                                  (p.cena / 100) *
-                                  cookie[index]?.count
-                                ).toFixed(2)}{" "}
-                                zł
-                              </p>
-                              <p className="link link-error">Usuń</p>
-                            </div>
-                          </th>
-                          <td>
-                            <div
-                              key={p.id}
-                              className="join flex justify-center"
-                            >
-                              <button
-                                onClick={removeItems}
-                                className="btn join-item"
-                              >
-                                -
-                              </button>
-                              <p className="btn btn-disabled join-item">
-                                {cookie[index]?.count}
-                              </p>
-                              <button
-                                onClick={addItems}
-                                className="btn join-item"
-                              >
-                                +
-                              </button>
-                            </div>
-                          </td>
-                          <td className="font-bold">1000 zł</td>
-                        </tr>
-                      </>
+                      <Table
+                        key={index}
+                        p={p}
+                        count={cookie[index]?.count}
+                        index={index}
+                      />
                     );
                   })}
                 </tbody>
@@ -113,7 +68,24 @@ export default function Koszyk() {
                 <h2 className="card-title">Suma Zamówiena</h2>
                 <div className="flex justify-between gap-10">
                   <p>Produkty:</p>
-                  <p>{total.toFixed(2)} zł</p>
+                  <p>
+                    {!cookie
+                      ? "0,00"
+                      : cookie
+                          .reduce(
+                            (
+                              acc: number,
+                              item: {
+                                id: string;
+                                price: number;
+                                count: number;
+                              },
+                            ) => acc + (item.price / 100) * item.count,
+                            0,
+                          )
+                          .toFixed(2)}{" "}
+                    zł
+                  </p>
                 </div>
                 <div className="card-actions justify-center">
                   <button

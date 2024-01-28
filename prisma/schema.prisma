@@ -15,6 +15,7 @@ model Zamowienia {
     uzytkowikId       String?
     email             String
     status            String
+    cena              Int
     ZamowioneProdukty ZamowioneProdukty[]
     createdAt         DateTime            @default(now())
     updatedAt         DateTime            @updatedAt

@@ -51,9 +51,6 @@ export const produktRouter = createTRPCRouter({
                        in: input.ids
                    }
                },
-               include: {
-                   zdjecia: true,
-               }
            }) 
         }),
     CreateProduct: protectedProcedure
