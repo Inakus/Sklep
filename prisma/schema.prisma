@@ -23,6 +23,7 @@ model Zamowienia {
 
 model ZamowioneProdukty {
     id           String     @id @default(cuid())
+    ilosc        Int
     zamowienia   Zamowienia @relation(fields: [zamowieniaId], references: [id], onDelete: Cascade)
     zamowieniaId String
     produkt      Produkty   @relation(fields: [produktyId], references: [id], onDelete: Cascade)

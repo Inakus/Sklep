@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Cookies } from "react-cookie";
 import { api } from "~/utils/api";
+import { useUser } from "@clerk/nextjs";
 
 import Layout from "./layout";
 import Table from "~/components/table";
@@ -11,8 +12,14 @@ export default function Koszyk() {
     Array<{ id: string; price: number; count: number }> | []
   >([]);
   const router = useRouter();
-  const orderId = 1234567890;
+  const products = api.produkt.FindProductsByIds.useQuery({
+    ids: cookie?.map((c) => c.id),
+  });
+  const { user } = useUser();
 
+  const [email, setEmail] = useState(
+    user?.primaryEmailAddress?.emailAddress ?? "",
+  );
   useEffect(() => {
     const shopingCookies = new Cookies();
     setCookie(
@@ -24,12 +31,24 @@ export default function Koszyk() {
     );
   }, []);
 
-  const products = api.produkt.FindProductsByIds.useQuery({
-    ids: cookie?.map((c) => c.id),
-  });
-
+  const order = api.zamowienia.AddOrder.useMutation();
+  if (products.data === undefined) {
+    return null;
+  }
   const handleClick = () => {
-    router.push(`/zamowienie/${orderId}`).catch(console.error);
+    order.mutate({
+      userId: user ? user?.id.toString() : undefined,
+      email: user?.primaryEmailAddress?.emailAddress ?? email,
+      price: cookie?.reduce((sum, item) => sum + item.price * item.count, 0),
+      products: products.data?.map((p, index: number) => {
+        return {
+          id: p.id.toString(),
+          // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+          quantity: cookie[index]?.count!,
+        };
+      }),
+    });
+    router.push(`/zamowienie/${order.data?.orderId}`).catch(console.error);
   };
 
   return (
@@ -88,9 +107,19 @@ export default function Koszyk() {
                   </p>
                 </div>
                 <div className="card-actions justify-center">
+                  <p>Podaj adres Email</p>
+                  <input
+                    type="text"
+                    className="input input-bordered w-full max-w-xs"
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
+                  />
                   <button
                     onClick={() => handleClick()}
-                    className="btn btn-primary btn-wide"
+                    className={
+                      "btn btn-primary btn-wide" +
+                      (products.data?.length === 0 ? " btn-disabled" : "")
+                    }
                   >
                     Kup Teraz
                   </button>
