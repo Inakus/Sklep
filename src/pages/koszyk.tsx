@@ -32,10 +32,10 @@ export default function Koszyk() {
   }, []);
 
   const order = api.zamowienia.AddOrder.useMutation();
-  if (products.data === undefined) {
-    return null;
-  }
   const handleClick = () => {
+    if (products.data === undefined) {
+      return null;
+    }
     order.mutate({
       userId: user ? user?.id.toString() : undefined,
       email: user?.primaryEmailAddress?.emailAddress ?? email,
@@ -48,6 +48,8 @@ export default function Koszyk() {
         };
       }),
     });
+    const shopingCookies = new Cookies();
+    shopingCookies.remove("shopingCart", { path: "/" });
     router.push(`/zamowienie/${order.data?.orderId}`).catch(console.error);
   };
 

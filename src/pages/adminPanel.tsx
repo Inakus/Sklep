@@ -74,6 +74,7 @@ export default function Page() {
   const createProduct = api.produkt.CreateProduct.useMutation();
   const deleteProduct = api.produkt.DeleteProduct.useMutation();
   const deleteAllProducts = api.produkt.DeleteAllProducts.useMutation();
+  const allOrders = api.zamowienia.FindAllOrders.useQuery();
 
   const handleCreateProduct = () => {
     if (
@@ -193,91 +194,122 @@ export default function Page() {
           <span>{text}</span>
         </div>
       )}
-      <div className="flex min-h-screen flex-col items-center justify-center">
-        <h1>Admin panel</h1>
-        <p>Witamy w panelu administracyjnym</p>
-        <input
-          type="file"
-          accept="image/*"
-          className="file-input w-full max-w-xs"
-          multiple
-          onChange={handleFileChange}
-        />
-        <button
-          className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg"
-          onClick={handleUpload}
-        >
-          Upload Images
-        </button>
+      <div className="flex min-h-screen w-full flex-row">
+        <div className="flex min-h-screen flex-1 flex-col items-center justify-center">
+          <div className="overflow-x-auto">
+            <table className="table">
+              {/* head */}
+              <thead>
+                <tr>
+                  <th>Id Zamowienia</th>
+                  <th>Data złozenia zamowienia</th>
+                  <th>Email klienta</th>
+                  <th>Status Zamowienia</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allOrders.data?.map((order, index) => {
+                  return (
+                    <tr key={index} className="hover">
+                      <th>{order.id}</th>
+                      <td>{order.createdAt.toUTCString()}</td>
+                      <td>{order.email}</td>
+                      <td>{order.status}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="flex min-h-screen flex-1 flex-col items-center justify-center">
+          <h1>Admin panel</h1>
+          <p>Witamy w panelu administracyjnym</p>
+          <input
+            type="file"
+            accept="image/*"
+            className="file-input w-full max-w-xs"
+            multiple
+            onChange={handleFileChange}
+          />
+          <button
+            className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+            onClick={handleUpload}
+          >
+            Upload Images
+          </button>
 
-        <p>Nazwa Przedmiotu</p>
-        <input
-          type="text"
-          placeholder="Type here"
-          className="input input-bordered w-full max-w-xs"
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <p>Kategoria</p>
-        <select
-          className="select select-bordered w-full max-w-xs"
-          onChange={(e) => setTag(e.target.value.toLowerCase())}
-        >
-          <option selected>Firany</option>
-          <option>Zasłony</option>
-          <option>Dywany</option>
-        </select>
-        <p>Cena</p>
-        <input
-          type="number"
-          placeholder="Type here"
-          className="input input-bordered w-full max-w-xs"
-          onChange={(e) => setPrice(Number(e.target.value) * 100)}
-        />
-        <p>Ilosc</p>
-        <input
-          type="number"
-          placeholder="Type here"
-          className="input input-bordered w-full max-w-xs"
-          onChange={(e) => setQuantity(Number(e.target.value))}
-        />
-        <p>Opis</p>
-        <QuillEditor
-          modules={quillModules}
-          formats={quillFormats}
-          theme="snow"
-          value={description}
-          onChange={setDescription}
-        />
-        <br></br>
-        <button
-          onClick={handleCreateProduct}
-          className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg"
-        >
-          Dodaj produkt
-        </button>
-        <br></br>
-        <br></br>
-        <p>Podaj ID produktu do usunięcia</p>
-        <input
-          type="text"
-          placeholder="Type here"
-          className="input input-bordered w-full max-w-xs"
-          onChange={(e) => setId(e.target.value)}
-        />
-        <br></br>
-        <button
-          onClick={handleDeleteProduct}
-          className="btn btn-error btn-xs sm:btn-sm md:btn-md lg:btn-lg"
-        >
-          Usun produkt
-        </button>
-        <br></br>
-        <button
-          onClick={handleDeleteAllProducts}
-          className="btn btn-error btn-xs sm:btn-sm md:btn-md lg:btn-lg"
-        >
-          Usun wszystkie produkty
-        </button>
+          <p>Nazwa Przedmiotu</p>
+          <input
+            type="text"
+            placeholder="Type here"
+            className="input input-bordered w-full max-w-xs"
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <p>Kategoria</p>
+          <select
+            className="select select-bordered w-full max-w-xs"
+            onChange={(e) => setTag(e.target.value.toLowerCase())}
+          >
+            <option selected>Firany</option>
+            <option>Zasłony</option>
+            <option>Dywany</option>
+          </select>
+          <p>Cena</p>
+          <input
+            type="number"
+            placeholder="Type here"
+            className="input input-bordered w-full max-w-xs"
+            onChange={(e) => setPrice(Number(e.target.value) * 100)}
+          />
+          <p>Ilosc</p>
+          <input
+            type="number"
+            placeholder="Type here"
+            className="input input-bordered w-full max-w-xs"
+            onChange={(e) => setQuantity(Number(e.target.value))}
+          />
+          <p>Opis</p>
+          <QuillEditor
+            modules={quillModules}
+            formats={quillFormats}
+            theme="snow"
+            value={description}
+            onChange={setDescription}
+          />
+          <br></br>
+          <br></br>
+          <br></br>
+          <button
+            onClick={handleCreateProduct}
+            className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+          >
+            Dodaj produkt
+          </button>
+          <br></br>
+          <br></br>
+          <p>Podaj ID produktu do usunięcia</p>
+          <input
+            type="text"
+            placeholder="Type here"
+            className="input input-bordered w-full max-w-xs"
+            onChange={(e) => setId(e.target.value)}
+          />
+          <br></br>
+          <button
+            onClick={handleDeleteProduct}
+            className="btn btn-error btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+          >
+            Usun produkt
+          </button>
+          <br></br>
+          <button
+            onClick={handleDeleteAllProducts}
+            className="btn btn-error btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+          >
+            Usun wszystkie produkty
+          </button>
+        </div>
       </div>
     </Layout>
   );

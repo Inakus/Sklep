@@ -1,18 +1,24 @@
 import { api } from "~/utils/api";
+import ImageGallery from "react-image-gallery";
+import "react-image-gallery/styles/css/image-gallery.css";
 
 import Head from "next/head";
 import Link from "next/link";
 import Layout from "./layout";
 import Card from "~/components/Card";
-import Carousel from "~/components/Carousel";
+
 import Hero from "~/components/Hero";
+import type { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 export default function Home() {
   const slides = [
-    "https://i.pinimg.com/originals/51/82/ac/5182ac536727d576c78a9320ac62de30.jpg",
-    "https://wallpapercave.com/wp/wp3386769.jpg",
-    "https://wallpaperaccess.com/full/809523.jpg",
-    "https://getwallpapers.com/wallpaper/full/5/c/0/606489.jpg",
+    {
+      original:
+        "https://i.pinimg.com/originals/51/82/ac/5182ac536727d576c78a9320ac62de30.jpg",
+    },
+    { original: "https://wallpapercave.com/wp/wp3386769.jpg" },
+    { original: "https://wallpaperaccess.com/full/809523.jpg" },
+    { original: "https://getwallpapers.com/wallpaper/full/5/c/0/606489.jpg" },
   ];
 
   const produkty = api.produkt.FindNewProducts.useQuery();
@@ -40,20 +46,44 @@ export default function Home() {
             </ul>
             <div className="flex justify-center p-5 align-middle">
               <div className="m-auto w-[60%]">
-                <Carousel slides={slides} />
+                {/* <Carousel slides={slides} /> */}
+                <ImageGallery
+                  items={slides}
+                  showFullscreenButton={false}
+                  lazyLoad={true}
+                  showPlayButton={false}
+                  autoPlay={true}
+                  slideInterval={10000}
+                  showBullets={true}
+                />
               </div>
             </div>
             <div className=" flex w-[100%] flex-row flex-wrap items-center justify-center gap-20 ">
-              {produkty.data?.map((produkt) => (
-                <Card
-                  key={produkt.id}
-                  id={produkt.id}
-                  name={produkt.nazwa}
-                  price={produkt.cena}
-                  description={produkt.opis}
-                  imageUrls={produkt.zdjecia[0]?.link}
-                />
-              ))}
+              {produkty.data?.map(
+                (produkt: {
+                  id: string;
+                  nazwa: string;
+                  cena: number;
+                  opis: string;
+                  zdjecia: { link: string | StaticImport }[];
+                }) => (
+                  <Card
+                    key={produkt.id}
+                    id={produkt.id}
+                    name={produkt.nazwa}
+                    price={produkt.cena}
+                    imageUrls={produkt.zdjecia[0]?.link as string}
+                  />
+                ),
+              )}
+              {produkty.isLoading && (
+                <div className="flex w-52 flex-col gap-4">
+                  <div className="skeleton h-32 w-full"></div>
+                  <div className="skeleton h-4 w-28"></div>
+                  <div className="skeleton h-4 w-full"></div>
+                  <div className="skeleton h-4 w-full"></div>
+                </div>
+              )}
             </div>
             <div className="m-5 flex items-center justify-center align-middle">
               <Hero />

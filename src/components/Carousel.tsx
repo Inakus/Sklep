@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "react-feather";
-
-import type { Zdjecia } from "@prisma/client";
+import Image from "next/image";
 
 export default function Carousel({ slides }: { slides: string[] }) {
   const [current, setCurrent] = useState(0);
@@ -25,15 +24,24 @@ export default function Carousel({ slides }: { slides: string[] }) {
         }}
       >
         {slides.map((s, i) => {
-          return <img key={i} src={s} />;
+          return (
+            <Image
+              priority
+              alt="test"
+              key={i}
+              src={s}
+              width={700}
+              height={700}
+            />
+          );
         })}
       </div>
 
       <div className="absolute top-0 flex h-full w-full items-center justify-between px-10 text-3xl text-white">
-        <button onClick={previousSlide}>
+        <button name="previous" onClick={previousSlide}>
           <ChevronLeft size={40} />
         </button>
-        <button onClick={nextSlide}>
+        <button name="next" onClick={nextSlide}>
           <ChevronRight size={40} />
         </button>
       </div>

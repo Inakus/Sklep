@@ -62,7 +62,7 @@ export default function Profil() {
                         <th>{order.id}</th>
                         <td>{order.createdAt.toLocaleString()}</td>
                         <td>{order.status}</td>
-                        <td>{order.cena}</td>
+                        <td>{(order.cena / 100).toFixed(2)} zł</td>
                       </tr>
                     );
                   })}

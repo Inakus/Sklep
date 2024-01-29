@@ -2,9 +2,10 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { api } from "~/utils/api";
 import { useCookies } from "react-cookie";
+import ImageGallery from "react-image-gallery";
+import "react-image-gallery/styles/css/image-gallery.css";
 
 import Layout from "../layout";
-import Carousel from "~/components/Carousel";
 import Link from "next/link";
 
 export default function Page() {
@@ -17,10 +18,10 @@ export default function Page() {
     id: id as string,
   });
 
-  const slides: string[] = [];
+  const slides: Array<{ original: string }> = [];
 
   produkt.data?.zdjecia.forEach((zdjecie) => {
-    slides.push(zdjecie.link);
+    slides.push({ original: zdjecie.link });
   });
   if (!produkt.data) {
     return <div>Produkt nie istnieje</div>;
@@ -66,7 +67,7 @@ export default function Page() {
 
         if (existingProductIndex !== -1) {
           // Product already in the cart, update count
-          shopingCartCookies[existingProductIndex].count += items;
+          shopingCartCookies[existingProductIndex]!.count += items;
         } else {
           // Product not in the cart, add it with count 1
           shopingCartCookies.push({
@@ -107,7 +108,15 @@ export default function Page() {
           <div className="card-body gap-4">
             <div className="flex flex-1 flex-row flex-wrap justify-center gap-2">
               <div className="m-auto w-[95%] sm:w-[60%]">
-                <Carousel slides={slides} />
+                <ImageGallery
+                  items={slides}
+                  showFullscreenButton={false}
+                  lazyLoad={true}
+                  showPlayButton={false}
+                  autoPlay={true}
+                  slideInterval={10000}
+                  showBullets={true}
+                />
               </div>
               <div className="m-auto flex flex-col items-end gap-1">
                 <div className="my-3 flex flex-col text-end">

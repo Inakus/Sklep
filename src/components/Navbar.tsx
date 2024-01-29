@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SignOutButton, useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useCookies } from "react-cookie";
+import Image from "next/image";
 
 export default function Navbar() {
   const { user } = useClerk();
@@ -39,7 +40,7 @@ export default function Navbar() {
             className="avatar btn btn-circle btn-ghost"
           >
             <div className="w-10 rounded-full">
-              <img src="/static/user.png" alt="test" />
+              <Image src="/static/user.png" alt="test" fill />
             </div>
           </div>
           <ul

@@ -29,7 +29,6 @@ export default function Page() {
                   id={produkt.id}
                   name={produkt.nazwa}
                   price={produkt.cena}
-                  description={produkt.opis}
                   imageUrls={produkt.zdjecia[0]?.link}
                 />
               ))}
